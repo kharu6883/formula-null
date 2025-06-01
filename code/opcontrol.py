@@ -1,5 +1,12 @@
 from time import sleep
 
+import evdev
+
+from RPi import GPIO
+
+from gpiozero import Motor, Servo
+from gpiozero.pins.pigpio import PiGPIOFactory
+
 # Pin setup
 factory = PiGPIOFactory()
 

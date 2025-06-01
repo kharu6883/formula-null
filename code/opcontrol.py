@@ -40,11 +40,11 @@ servo_val = 0
 for event in master.read_loop():
     if event.type == 3:
         if event.value == 0:
-            servo_val = -1
+            servo_val = -0.5
         elif event.value == 32768:
             servo_val = 0
         elif event.value == 65535:
-            servo_val = 1
+            servo_val = 0.5
 
     if event.code == 305:
         if event.value == 1:

@@ -40,13 +40,13 @@ servo_val = 0
 for event in master.read_loop():
     if event.type == 3:
         if event.value == 0:
-            servo_val = -0.5
+            servo_val = 0.3
         elif event.value == 32768:
-            servo_val = 0
+            servo_val = -0.05
         elif event.value == 65535:
-            servo_val = 0.5
+            servo_val = -0.3
 
-    if event.code == 305:
+    if event.code == 304:
         if event.value == 1:
             GPIO.output(IN3, GPIO.HIGH)
             GPIO.output(IN4, GPIO.LOW)
@@ -55,7 +55,7 @@ for event in master.read_loop():
             GPIO.output(IN3, GPIO.LOW)
             GPIO.output(IN4, GPIO.LOW)
             pwm.ChangeDutyCycle(0)
-    elif event.code == 304:
+    elif event.code == 305:
         if event.value == 1:
             GPIO.output(IN3, GPIO.LOW)
             GPIO.output(IN4, GPIO.HIGH)

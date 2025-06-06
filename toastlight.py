@@ -14,35 +14,56 @@ device.brightness(5) # Adjust as needed
 # Define the pixel art for the toast silhouette from your image (8x8)
 # 1 represents an LED on, 0 represents an LED off
 toast_silhouette_image_pixels = [
-    [0, 0, 1, 1, 1, 1, 0, 0], # Rounded top
-    [0, 1, 1, 1, 1, 1, 1, 0], # Slight curve
-    [1, 1, 1, 1, 1, 1, 1, 1], # Full width
-    [1, 1, 1, 1, 1, 1, 1, 1], #
-    [1, 1, 1, 1, 1, 1, 1, 1], # Main body
-    [1, 1, 1, 1, 1, 1, 1, 1], #
-    [1, 1, 1, 1, 1, 1, 1, 1], #
-    [1, 1, 1, 1, 1, 1, 1, 1]  # Flat bottom
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 1, 1, 1, 1, 1, 1, 0], 
+    [0, 1, 1, 1, 1, 1, 1, 0], 
+    [0, 0, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0]  
 ]
 
 
-def display_specific_toast_silhouette():
-    print("Displaying the specific toast silhouette on the MAX7219 matrix...")
+def animate_toast_levitate(duration_seconds=15, loop_count=None, speed=0.1):
+    print(f"Animating toast levitating for {duration_seconds} seconds (or {loop_count} loops)...")
 
-    # Use a canvas to draw the pixels
-    with canvas(device) as draw:
-        for y, row in enumerate(toast_silhouette_image_pixels):
-            for x, pixel_on in enumerate(row):
-                if pixel_on:
-                    draw.point((x, y), fill="white") # Turn on the LED at (x,y)
+    levitation_offsets = [
+        0,
+        1,
+        0,
+        -1,
+        0
+    ]
+    
+    start_time = time.time()
+    num_loops = 0
 
-    print("Toast silhouette displayed. Holding for 5 seconds...")
-    time.sleep(5) # Display for 5 seconds
+    while True:
+        if loop_count is not None and num_loops >= loop_count:
+            break
+        if loop_count is None and (time.time() - start_time > duration_seconds):
+            break
+
+        for y_offset in levitation_offsets:
+            with canvas(device) as draw:
+                for y_row, row_pixels in enumerate(toast_base_pixels):
+                    for x_col, pixel_on in enumerate(row_pixels):
+                        if pixel_on:
+                            display_y = y_row + y_offset
+                            if 0 <= display_y < 8:
+                                draw.point((x_col, display_y), fill="white")
+            time.sleep(speed)
+        
+        num_loops += 1
+
+    print("Animation finished.")
+
 
 if __name__ == "__main__":
     try:
-        display_specific_toast_silhouette()
+        animate_toast_levitate(duration_seconds=15, speed=0.15)
     except KeyboardInterrupt:
-        print("\nExiting.")
+        print("\nAnimation stopped by user.")
     finally:
-        # Clear the display when the script exits
         device.clear()
